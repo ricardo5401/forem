@@ -33,6 +33,9 @@ module Forem
 
       if @post.save
         create_successful
+        page = (@topic.posts.count.to_f / Forem.per_page.to_f).ceil
+        url = forum_topic_url(@topic.forum, @topic, pagination_param => page, anchor: "post-#{@post.id}")
+        UserMailer.posts_notification(@topic.user_id, url)
       else
         create_failed
       end
